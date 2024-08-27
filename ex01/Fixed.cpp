@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Fixed.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mabdelsa <mabdelsa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mahmoud <mahmoud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/24 12:24:49 by mabdelsa          #+#    #+#             */
-/*   Updated: 2024/08/24 13:07:42 by mabdelsa         ###   ########.fr       */
+/*   Updated: 2024/08/27 16:05:36 by mahmoud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,14 @@ Fixed::Fixed() : fixedPointNum(0)
 Fixed::Fixed(const Fixed &copyTemplate)
 {
     std::cout << "Copy constructor called" << std::endl;
-    fixedPointNum = copyTemplate.getRawBits();
+    *this = copyTemplate;
 }
 
 Fixed& Fixed::operator=(const Fixed &initTemplate)
 {
     std::cout << "Copy assignment operator called" << std::endl;
     if (this != &initTemplate)
-        this->fixedPointNum = initTemplate.getRawBits();
+        this->fixedPointNum = initTemplate.fixedPointNum;
     return *this;
 }
 
@@ -45,4 +45,32 @@ int Fixed::getRawBits( void ) const
 {
     std::cout << "getRawBits member function called" << std::endl;
     return (fixedPointNum);
+}
+
+Fixed::Fixed(const int n) 
+{
+    std::cout << "Int constructor called" << std::endl;
+    fixedPointNum = n << fractBits;
+}
+
+Fixed::Fixed(const float n) 
+{
+    std::cout << "Float constructor called" << std::endl;
+    fixedPointNum = roundf(n * (1 << fractBits));
+}
+
+float Fixed::toFloat(void) const 
+{
+    return static_cast<float>(fixedPointNum) / (1 << fractBits);
+}
+
+int Fixed::toInt(void) const 
+{
+    return (fixedPointNum >> fractBits);
+}
+
+std::ostream &operator<<(std::ostream &out, const Fixed &fixed) 
+{
+    out << fixed.toFloat();
+    return (out);
 }
